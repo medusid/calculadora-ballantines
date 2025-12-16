@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calculadora de Valores</title>
+  <style>
+    body {
+      background-color: #000000;
+      font-family: Arial, Helvetica, sans-serif;
+      color: #ffffff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      background-color: #111111;
+      border: 2px solid #BF267A;
+      border-radius: 12px;
+      padding: 20px;
+      width: 320px;
+      box-shadow: 0 0 15px rgba(191, 38, 122, 0.5);
+    }
+
+    h1 {
+      text-align: center;
+      color: #BF267A;
+      margin-bottom: 20px;
+    }
+
+    .item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+
+    input[type="number"] {
+      width: 80px;
+      padding: 5px;
+      border-radius: 6px;
+      border: none;
+      outline: none;
+      text-align: center;
+    }
+
+    .checkbox {
+      margin: 15px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #BF267A;
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    .resultado {
+      margin-top: 15px;
+      text-align: center;
+      font-size: 18px;
+      color: #BF267A;
+    }
+
+    .brinde {
+      margin-top: 12px;
+      text-align: center;
+      font-size: 14px;
+      color: #ffffff;
+      animation: piscar 1s infinite;
+    }
+
+    @keyframes piscar {
+      0% { opacity: 1; }
+      50% { opacity: 0.3; }
+      100% { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Calculadora</h1>
+
+    <div class="item"><span>RADAR (R$ 5.000)</span><input type="number" id="radar" min="0" value="0" /></div>
+    <div class="item"><span>C4 (R$ 10.000)</span><input type="number" id="c4" min="0" value="0" /></div>
+    <div class="item"><span>TABLET (R$ 45.000)</span><input type="number" id="tablet" min="0" value="0" /></div>
+    <div class="item"><span>GRAMPO (R$ 5.000)</span><input type="number" id="grampo" min="0" value="0" /></div>
+    <div class="item"><span>CARTÃO BÁSICO (R$ 5.000)</span><input type="number" id="basico" min="0" value="0" /></div>
+    <div class="item"><span>CARTÃO BLACK (R$ 15.000)</span><input type="number" id="black" min="0" value="0" /></div>
+    <div class="item"><span>CARTÃO SUPREMO (R$ 25.000)</span><input type="number" id="supremo" min="0" value="0" /></div>
+
+    <div class="checkbox">
+      <input type="checkbox" id="parceria" />
+      <label for="parceria">Aplicar parceria (-20%)</label>
+    </div>
+
+    <button onclick="calcular()">Calcular Total</button>
+
+    <div class="resultado" id="resultado">Total: R$ 0</div>
+    <div class="brinde" id="brinde"></div>
+  </div>
+
+  <script>
+    function calcular() {
+      const valores = {
+        radar: 5000,
+        c4: 10000,
+        tablet: 45000,
+        grampo: 5000,
+        basico: 5000,
+        black: 15000,
+        supremo: 25000
+      };
+
+      let total = 0;
+
+      for (let item in valores) {
+        const quantidade = Number(document.getElementById(item).value) || 0;
+        total += quantidade * valores[item];
+      }
+
+      if (document.getElementById('parceria').checked) {
+        total *= 0.8;
+      }
+
+      document.getElementById('resultado').innerText = 'Total: R$ ' + total.toLocaleString('pt-BR');
+
+      const brindes = Math.floor(total / 100000);
+      const brindeDiv = document.getElementById('brinde');
+
+      if (brindes > 0) {
+        const tipos = [];
+        for (let item in valores) {
+          const qtd = Number(document.getElementById(item).value) || 0;
+          if (qtd > 0) {
+            if (item === 'grampo') tipos.push('Grampo');
+            if (item === 'basico' || item === 'black' || item === 'supremo') tipos.push('Cartão');
+            if (item === 'radar') tipos.push('Radar');
+            if (item === 'c4') tipos.push('C4');
+            if (item === 'tablet') tipos.push('Tablet');
+          }
+        }
+
+        const tipoTexto = tipos.length ? [...new Set(tipos)].join(', ') : 'Item comprado';
+        brindeDiv.innerText = `🎁 AVISO DE BRINDE: ${brindes} brinde(s) do mesmo tipo (${tipoTexto}).`;
+      } else {
+        brindeDiv.innerText = '';
+      }
+    }
+  </script>
+</body>
+</html>
